@@ -8,6 +8,10 @@ Instructions for Running:
 
 Product Description:
 Perl script written by Andrew Nisbet for Edmonton Public Library, distributable by the enclosed license.
+The script de-duplicates symphony output files based on columns selected. The column numbers are zero-based.
+Any column index that is out of range will be ignored with a message and results will be undefined. If 
+no column number is selected the all lines will be output as is. The content of any outputted line will
+never be modified. The order of output shall be undefined and will necessarily vary from the original file.
 
 Repository Information:
 This product is under version control using Git.

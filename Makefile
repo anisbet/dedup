@@ -2,8 +2,8 @@
 # Makefile for project dedup 
 # Created: Thu Oct 23 13:21:32 MDT 2014
 #
-#<one line to give the program's name and a brief idea of what it does.>
-#    Copyright (C) 2013  Andrew Nisbet
+# De-duplicates a column based file.
+#    Copyright (C) 2014  Andrew Nisbet
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,13 +33,32 @@ LOCAL=~/projects/dedup/
 APP=dedup.pl
 ARGS=-x
 
-put: test
-	scp ${LOCAL}${APP} ${USER}@${TEST_SERVER}:${REMOTE}
-	ssh ${USER}@${TEST_SERVER} '${REMOTE}${APP} ${ARGS}'
-get:
-	scp ${USER}@${TEST_SERVER}:${REMOTE}${APP} ${LOCAL}
 test:
 	perl -c ${APP}
+	cat test_key.txt | ./dedup.pl -fc1 -d
+	cat test_key.txt | ./dedup.pl -fc2 -d
+	cat test_key.txt | ./dedup.pl -fc3 -d
+	# test dedup on column selection
+	cat test_col.txt | ./dedup.pl -fc2 -d
+	cat test_col.txt | ./dedup.pl -fc1 -d
+	cat test_col.txt | ./dedup.pl -fc1,c2 -d
+	# Test if dedup gets no valid range should print all lines.
+	cat test_col.txt | ./dedup.pl -fc8 -d
+	# Test duplicate examples
+	cat test_dup.txt | ./dedup.pl -fc2 -d
+	cat test_dup.txt | ./dedup.pl -fc1 -d
+	cat test_dup.txt | ./dedup.pl -fc1,c2 -d
+	# Order shouldn't matter.
+	cat test_dup.txt | ./dedup.pl -fc2,c1 -d
+	# Test malformed file, that is no columns to split. should print all lines none duplicated lines.
+	cat test_dup_no_delimiter.txt | ./dedup.pl -fc1 -d
+	cat test_dup_no_delimiter.txt | ./dedup.pl -fc2 -d
+	cat test_dup_no_delimiter.txt | ./dedup.pl -fc1,c2 -d
+	cat test_dup_no_delimiter.txt | ./dedup.pl -fc7 -d
+
 production: test
 	scp ${LOCAL}${APP} ${USER}@${PRODUCTION_SERVER}:${REMOTE}
 
+put: test
+	scp ${LOCAL}${APP} ${USER}@${TEST_SERVER}:${REMOTE}
+	ssh ${USER}@${TEST_SERVER} '${REMOTE}${APP} ${ARGS}'
