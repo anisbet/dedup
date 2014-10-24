@@ -26,6 +26,7 @@
 # Author:  Andrew Nisbet, Edmonton Public Library
 # Created: Thu Oct 23 13:21:32 MDT 2014
 # Rev: 
+#          0.1 - Added -i. 
 #          0.0 - Dev. 
 #
 ####################################################
@@ -42,7 +43,7 @@ use Getopt::Std;
 $ENV{'PATH'}  = qq{:/s/sirsi/Unicorn/Bincustom:/s/sirsi/Unicorn/Bin:/usr/bin:/usr/sbin};
 $ENV{'UPATH'} = qq{/s/sirsi/Unicorn/Config/upath};
 ###############################################
-my $VERSION        = qq{0.0};
+my $VERSION        = qq{0.1};
 my @COLUMNS_WANTED = ();
 
 #
@@ -142,7 +143,12 @@ sub getKey
 	{
 		$i -= 1;
 		# we have to iterate over a zero-based array, but user can't input -fc0 the compiler complains.
-		push( @newLine, $columns[ $i ] ) if ( defined $columns[ $i ] and exists $columns[ $i ] );
+		if ( defined $columns[ $i ] and exists $columns[ $i ] )
+		{
+			my $cols = $columns[ $i ];
+			$cols = lc( $columns[ $i ] ) if ( $opt{ 'i' } );
+			push( @newLine, $cols );
+		}
 	}
 	# it doesn't matter what we use as a delimiter as long as we are consistent.
 	$key = join( ' ', @newLine );
