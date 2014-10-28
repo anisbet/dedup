@@ -36,13 +36,6 @@ use warnings;
 use vars qw/ %opt /;
 use Getopt::Std;
 
-# Environment setup required by cron to run script because its daemon runs
-# without assuming any environment settings and we need to use sirsi's.
-###############################################
-# *** Edit these to suit your environment *** #
-$ENV{'PATH'}  = qq{:/s/sirsi/Unicorn/Bincustom:/s/sirsi/Unicorn/Bin:/usr/bin:/usr/sbin};
-$ENV{'UPATH'} = qq{/s/sirsi/Unicorn/Config/upath};
-###############################################
 my $VERSION        = qq{0.1};
 my @COLUMNS_WANTED = ();
 
