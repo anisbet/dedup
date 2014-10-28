@@ -26,6 +26,7 @@
 # Author:  Andrew Nisbet, Edmonton Public Library
 # Created: Thu Oct 23 13:21:32 MDT 2014
 # Rev: 
+#          0.2 - Removed extra Symphony environment declarations. 
 #          0.1 - Added -i. 
 #          0.0 - Dev. 
 #
@@ -36,7 +37,7 @@ use warnings;
 use vars qw/ %opt /;
 use Getopt::Std;
 
-my $VERSION        = qq{0.1};
+my $VERSION        = qq{0.2};
 my @COLUMNS_WANTED = ();
 
 #
