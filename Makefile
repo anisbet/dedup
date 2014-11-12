@@ -55,6 +55,16 @@ test:
 	cat test_dup_no_delimiter.txt | ./dedup.pl -fc2 -d
 	cat test_dup_no_delimiter.txt | ./dedup.pl -fc1,c2 -d
 	cat test_dup_no_delimiter.txt | ./dedup.pl -fc7 -d
+	# Test test less than conditional comparison. Should print '1|match|'
+	cat test_less_than.txt | ./dedup.pl -fc2 -d -lc1
+	# Test test less than conditional comparison. Should print '3|match|'
+	cat test_less_than.txt | ./dedup.pl -fc2 -d -gc1
+	# Test test less than conditional comparison. Should print '<blank line>\n 1|match|'
+	cat test_dup_than.txt | ./dedup.pl -fc2 -d -lc1
+	# Test test less than conditional comparison. Should print '10|match|'
+	cat test_less_than.txt | ./dedup.pl -fc2 -d -gc1 -n
+	# Test test less than conditional comparison. Should print '3|match|'
+	cat test_less_than.txt | ./dedup.pl -fc2 -d -gc1
 
 production: test
 	scp ${LOCAL}${APP} ${USER}@${PRODUCTION_SERVER}:${REMOTE}
