@@ -26,6 +26,7 @@
 # Author:  Andrew Nisbet, Edmonton Public Library
 # Created: Thu Oct 23 13:21:32 MDT 2014
 # Rev: 
+#          0.4 - Improved documentation and debugging information. 
 #          0.3 - Add conditional testing of additional fields before de-duplication. 
 #          0.2 - Removed extra Symphony environment declarations. 
 #          0.1 - Added -i. 
@@ -38,7 +39,7 @@ use warnings;
 use vars qw/ %opt /;
 use Getopt::Std;
 
-my $VERSION        = qq{0.3};
+my $VERSION        = qq{0.4};
 my @COLUMNS_WANTED = ();
 my @COLUMNS_CHECK  = (); # Values of additional columns that will select which duplicate to keep.
 
@@ -63,6 +64,7 @@ the greater of the two values in the specified columns.
 
 **NOTE: comparisons are made on string values within columns, therefore are sorted alpha-numerically
 so '10' is less than '2' because the first character of '10' is less than the first character of '3'.
+To overcome this use the -n switch. 
 
 The input is expected to be on standard in.
 
@@ -207,17 +209,21 @@ sub choose_duplicate( $$$ )
 	my $lineTwo = shift;
 	my $keyOne  = getKey( $lineOne, \@COLUMNS_CHECK );
 	my $keyTwo  = getKey( $lineTwo, \@COLUMNS_CHECK );
-	if ( $opt{'n'} and $keyOne =~ m/\d{1,}/ and $keyTwo =~ m/\d{1,}/ )
+	if ( $opt{'n'} ) 
 	{
-		if ( $keyWord eq 'l' and $keyOne < $keyTwo )
+		if ( $keyOne =~ m/\d{1,}/ and $keyTwo =~ m/\d{1,}/ )
 		{
-			return $lineOne;
+			if ( $keyWord eq 'l' and $keyOne < $keyTwo )
+			{
+				return $lineOne;
+			}
+			elsif ( $keyWord eq 'g' and $keyOne > $keyTwo )
+			{
+				return $lineOne;
+			}
+			return $lineTwo;
 		}
-		elsif ( $keyWord eq 'g' and $keyOne > $keyTwo )
-		{
-			return $lineOne;
-		}
-		return $lineTwo;
+		print STDERR "* Warning: value: '$keyOne' and/or '$keyTwo' could not be coerced into a number.\n" if ( $opt{'d'} );
 	}
 
 	if ( ($keyWord eq 'l') and ($keyOne lt $keyTwo) )
